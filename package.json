@@ -1,0 +1,37 @@
+{
+  "name": "playwright-smart-reporter",
+  "version": "0.1.0",
+  "description": "An intelligent Playwright HTML reporter with AI-powered failure analysis, flakiness detection, and performance regression alerts",
+  "main": "dist/smart-reporter.js",
+  "types": "dist/smart-reporter.d.ts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "test": "playwright test",
+    "test:demo": "playwright test --config=example/playwright.config.ts"
+  },
+  "keywords": [
+    "playwright",
+    "reporter",
+    "testing",
+    "html-reporter",
+    "ai",
+    "flaky-tests",
+    "performance"
+  ],
+  "author": "",
+  "license": "MIT",
+  "peerDependencies": {
+    "@playwright/test": ">=1.40.0"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.49.0",
+    "typescript": "^5.3.0"
+  },
+  "optionalDependencies": {
+    "@anthropic-ai/sdk": "^0.32.0",
+    "openai": "^4.70.0"
+  }
+}

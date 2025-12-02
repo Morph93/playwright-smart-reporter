@@ -1,0 +1,10 @@
+node_modules/
+dist/
+*.log
+.DS_Store
+
+# Test artifacts
+example/smart-report.html
+example/test-history.json
+test-results/
+playwright-report/
