@@ -30,6 +30,13 @@ interface TestHistory {
   [testId: string]: TestHistoryEntry[];
 }
 
+interface StepData {
+  title: string;
+  duration: number;
+  category: string;
+  isSlowest?: boolean;
+}
+
 interface TestResultData {
   testId: string;
   title: string;
@@ -37,13 +44,13 @@ interface TestResultData {
   status: 'passed' | 'failed' | 'skipped' | 'timedOut' | 'interrupted';
   duration: number;
   error?: string;
-  errorStack?: string;
   retry: number;
   flakinessScore?: number;
   flakinessIndicator?: string;
   performanceTrend?: string;
   averageDuration?: number;
   aiSuggestion?: string;
+  steps: StepData[];
 }
 
 // ============================================================================
@@ -76,6 +83,9 @@ class SmartReporter implements Reporter {
     const testId = this.getTestId(test);
     const file = path.relative(this.outputDir, test.location.file);
 
+    // Extract step timings from result
+    const steps = this.extractSteps(result);
+
     const testData: TestResultData = {
       testId,
       title: test.title,
@@ -83,13 +93,14 @@ class SmartReporter implements Reporter {
       status: result.status,
       duration: result.duration,
       retry: result.retry,
+      steps,
     };
 
     if (result.status === 'failed' || result.status === 'timedOut') {
       const error = result.errors[0];
       if (error) {
-        testData.error = error.message || 'Unknown error';
-        testData.errorStack = error.stack;
+        // Use stack trace as it contains the error message plus location info
+        testData.error = error.stack || error.message || 'Unknown error';
       }
     }
 
@@ -200,6 +211,48 @@ class SmartReporter implements Reporter {
   }
 
   // ============================================================================
+  // Step Extraction
+  // ============================================================================
+
+  private extractSteps(result: TestResult): StepData[] {
+    const steps: StepData[] = [];
+
+    // Recursively extract steps from the result
+    const processStep = (step: TestResult['steps'][0]) => {
+      // Only include meaningful steps (skip internal hooks)
+      if (step.category === 'test.step' || step.category === 'pw:api') {
+        steps.push({
+          title: step.title,
+          duration: step.duration,
+          category: step.category,
+        });
+      }
+
+      // Process nested steps
+      if (step.steps) {
+        for (const nested of step.steps) {
+          processStep(nested);
+        }
+      }
+    };
+
+    for (const step of result.steps) {
+      processStep(step);
+    }
+
+    // Mark the slowest step if we have any
+    if (steps.length > 0) {
+      const maxDuration = Math.max(...steps.map((s) => s.duration));
+      const slowestIndex = steps.findIndex((s) => s.duration === maxDuration);
+      if (slowestIndex !== -1 && maxDuration > 100) {
+        steps[slowestIndex].isSlowest = true;
+      }
+    }
+
+    return steps;
+  }
+
+  // ============================================================================
   // AI Suggestions
   // ============================================================================
 
@@ -242,10 +295,8 @@ class SmartReporter implements Reporter {
 
 Test: ${test.title}
 File: ${test.file}
-Error: ${test.error || 'Unknown error'}
-
-Stack trace:
-${test.errorStack || 'No stack trace available'}
+Error:
+${test.error || 'Unknown error'}
 
 Provide a brief, actionable suggestion to fix this failure.`;
   }
@@ -816,6 +867,86 @@ Provide a brief, actionable suggestion to fix this failure.`;
       font-size: 0.8rem;
       color: var(--text-muted);
     }
+
+    /* Step Timings */
+    .steps-container {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .step-row {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 0.5rem 0.75rem;
+      background: var(--bg-primary);
+      border-radius: 6px;
+      border: 1px solid var(--border-subtle);
+    }
+
+    .step-row.slowest {
+      border-color: var(--accent-orange);
+      background: rgba(255, 136, 68, 0.1);
+    }
+
+    .step-bar-container {
+      flex: 1;
+      height: 6px;
+      background: var(--border-subtle);
+      border-radius: 3px;
+      overflow: hidden;
+    }
+
+    .step-bar {
+      height: 100%;
+      background: var(--accent-blue);
+      border-radius: 3px;
+      transition: width 0.3s ease;
+    }
+
+    .step-row.slowest .step-bar {
+      background: var(--accent-orange);
+    }
+
+    .step-title {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.75rem;
+      color: var(--text-secondary);
+      min-width: 0;
+      flex: 2;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .step-row.slowest .step-title {
+      color: var(--accent-orange);
+    }
+
+    .step-duration {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      min-width: 60px;
+      text-align: right;
+    }
+
+    .step-row.slowest .step-duration {
+      color: var(--accent-orange);
+      font-weight: 600;
+    }
+
+    .slowest-badge {
+      font-size: 0.65rem;
+      padding: 0.15rem 0.4rem;
+      background: var(--accent-orange);
+      color: var(--bg-primary);
+      border-radius: 4px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      font-weight: 600;
+    }
   </style>
 </head>
 <body>
@@ -927,7 +1058,7 @@ Provide a brief, actionable suggestion to fix this failure.`;
     const isUnstable = test.flakinessScore !== undefined && test.flakinessScore >= 0.1 && test.flakinessScore < 0.3;
     const isSlow = test.performanceTrend?.startsWith('↑') || false;
     const isFaster = test.performanceTrend?.startsWith('↓') || false;
-    const hasDetails = test.error || test.aiSuggestion || test.status !== 'passed';
+    const hasDetails = test.error || test.aiSuggestion || test.steps.length > 0 || test.status !== 'passed';
     const cardId = this.sanitizeId(test.testId);
 
     // Determine badge class
@@ -969,20 +1100,37 @@ Provide a brief, actionable suggestion to fix this failure.`;
   private generateTestDetails(test: TestResultData, cardId: string): string {
     let details = '';
 
+    // Step timings - show first as it's most useful for performance analysis
+    if (test.steps.length > 0) {
+      const maxDuration = Math.max(...test.steps.map((s) => s.duration));
+      details += `
+        <div class="detail-section">
+          <div class="detail-label"><span class="icon">⏱</span> Step Timings</div>
+          <div class="steps-container">
+            ${test.steps
+              .map(
+                (step) => `
+              <div class="step-row ${step.isSlowest ? 'slowest' : ''}">
+                <span class="step-title" title="${this.escapeHtml(step.title)}">${this.escapeHtml(step.title)}</span>
+                <div class="step-bar-container">
+                  <div class="step-bar" style="width: ${maxDuration > 0 ? (step.duration / maxDuration) * 100 : 0}%"></div>
+                </div>
+                <span class="step-duration">${this.formatDuration(step.duration)}</span>
+                ${step.isSlowest ? '<span class="slowest-badge">Slowest</span>' : ''}
+              </div>
+            `
+              )
+              .join('')}
+          </div>
+        </div>
+      `;
+    }
+
     if (test.error) {
       details += `
         <div class="detail-section">
           <div class="detail-label"><span class="icon">⚠</span> Error</div>
           <div class="error-box">${this.escapeHtml(test.error)}</div>
-        </div>
-      `;
-    }
-
-    if (test.errorStack) {
-      details += `
-        <div class="detail-section">
-          <div class="detail-label"><span class="icon">📋</span> Stack Trace</div>
-          <div class="stack-box">${this.escapeHtml(test.errorStack)}</div>
         </div>
       `;
     }
