@@ -25,7 +25,7 @@ An intelligent Playwright HTML reporter with AI-powered failure analysis, flakin
 ## Installation
 
 ```bash
-npm install playwright-smart-reporter
+npm install -D playwright-smart-reporter
 ```
 
 ## Usage
@@ -33,32 +33,35 @@ npm install playwright-smart-reporter
 Add to your `playwright.config.ts`:
 
 ```typescript
-import { defineConfig } from '@playwright/test';
+import { defineConfig } from "@playwright/test";
 
 export default defineConfig({
   reporter: [
-    ['playwright-smart-reporter', {
-      outputFile: 'smart-report.html',
-      historyFile: 'test-history.json',
-      maxHistoryRuns: 10,
-      performanceThreshold: 0.2,
-      slackWebhook: process.env.SLACK_WEBHOOK_URL,
-      teamsWebhook: process.env.TEAMS_WEBHOOK_URL,
-    }],
+    [
+      "playwright-smart-reporter",
+      {
+        outputFile: "smart-report.html",
+        historyFile: "test-history.json",
+        maxHistoryRuns: 10,
+        performanceThreshold: 0.2,
+        slackWebhook: process.env.SLACK_WEBHOOK_URL,
+        teamsWebhook: process.env.TEAMS_WEBHOOK_URL,
+      },
+    ],
   ],
 });
 ```
 
 ### Configuration Options
 
-| Option | Default | Description |
-|--------|---------|-------------|
-| `outputFile` | `smart-report.html` | Path for the HTML report |
-| `historyFile` | `test-history.json` | Path for test history storage |
-| `maxHistoryRuns` | `10` | Number of runs to keep in history |
-| `performanceThreshold` | `0.2` | Threshold for performance regression (20%) |
-| `slackWebhook` | - | Slack webhook URL for failure notifications |
-| `teamsWebhook` | - | Microsoft Teams webhook URL for notifications |
+| Option                 | Default             | Description                                   |
+| ---------------------- | ------------------- | --------------------------------------------- |
+| `outputFile`           | `smart-report.html` | Path for the HTML report                      |
+| `historyFile`          | `test-history.json` | Path for test history storage                 |
+| `maxHistoryRuns`       | `10`                | Number of runs to keep in history             |
+| `performanceThreshold` | `0.2`               | Threshold for performance regression (20%)    |
+| `slackWebhook`         | -                   | Slack webhook URL for failure notifications   |
+| `teamsWebhook`         | -                   | Microsoft Teams webhook URL for notifications |
 
 ### AI Analysis
 
@@ -77,6 +80,7 @@ The reporter will automatically analyze failures and provide fix suggestions in 
 ## Report Features
 
 ### Summary Dashboard
+
 - Pass rate ring with percentage
 - Pass/fail/skip counts
 - Flaky test count
@@ -88,6 +92,7 @@ The reporter will automatically analyze failures and provide fix suggestions in 
 ![Trend Chart](https://raw.githubusercontent.com/qa-gary-parker/playwright-smart-reporter/master/images/trend-chart-hover.png)
 
 Visual stacked bar chart showing test status across runs:
+
 - **Green** - Passed tests
 - **Red** - Failed tests
 - **Gray** - Skipped tests
@@ -95,11 +100,13 @@ Visual stacked bar chart showing test status across runs:
 - Current run highlighted with glow effect
 
 Secondary trend charts show:
+
 - **Duration** - Suite execution time per run
 - **Flaky** - Number of flaky tests detected
 - **Slow** - Number of slow tests detected
 
 ### Flakiness Indicators
+
 - 🟢 **Stable** (<10% failure rate)
 - 🟡 **Unstable** (10-30% failure rate)
 - 🔴 **Flaky** (>30% failure rate)
@@ -107,6 +114,7 @@ Secondary trend charts show:
 - ⚪ **Skipped** (test was skipped)
 
 ### Performance Trends
+
 - ↑ **Regression** - Test is slower than average
 - ↓ **Improved** - Test is faster than average
 - → **Stable** - Test is within normal range
@@ -116,6 +124,7 @@ Secondary trend charts show:
 ![Expanded Test](https://raw.githubusercontent.com/qa-gary-parker/playwright-smart-reporter/master/images/test-expanded-ai.png)
 
 When you expand a test, you'll see:
+
 - **Pass/Fail Sparkline** - Green/red/gray dots showing the pattern
 - **Duration Trend Chart** - Bar chart showing how duration changes
 - **Step Timings** - Visual breakdown with slowest step highlighted
@@ -125,11 +134,13 @@ When you expand a test, you'll see:
 - Current run highlighted with border/purple color
 
 ### Step Timings
+
 - Visual bar chart of step durations
 - "SLOWEST" badge on the slowest step
 - Helps identify bottlenecks in your tests
 
 ### Additional Features
+
 - **Screenshot embedding** - Failure screenshots shown inline
 - **Video links** - Quick access to recordings
 - **Retry badge** - Shows if test passed on retry
@@ -197,6 +208,7 @@ test:
 ### CI Environment Detection
 
 The reporter automatically detects CI environments and enriches history with:
+
 - **Run ID** - Unique identifier for the run
 - **Branch** - Current branch name
 - **Commit** - Short commit SHA
@@ -210,14 +222,18 @@ Configure Slack or Teams webhooks to receive notifications when tests fail:
 
 ```typescript
 reporter: [
-  ['playwright-smart-reporter', {
-    slackWebhook: process.env.SLACK_WEBHOOK_URL,
-    teamsWebhook: process.env.TEAMS_WEBHOOK_URL,
-  }],
-]
+  [
+    "playwright-smart-reporter",
+    {
+      slackWebhook: process.env.SLACK_WEBHOOK_URL,
+      teamsWebhook: process.env.TEAMS_WEBHOOK_URL,
+    },
+  ],
+];
 ```
 
 Notifications include:
+
 - Summary of passed/failed tests
 - List of first 5 failed test names
 - Only sent when there are failures
