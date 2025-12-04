@@ -21,8 +21,16 @@
     "flaky-tests",
     "performance"
   ],
-  "author": "",
+  "author": "Gary Parker",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/gary-parker/playwright-smart-reporter.git"
+  },
+  "homepage": "https://github.com/gary-parker/playwright-smart-reporter#readme",
+  "bugs": {
+    "url": "https://github.com/gary-parker/playwright-smart-reporter/issues"
+  },
   "peerDependencies": {
     "@playwright/test": ">=1.40.0"
   },
@@ -33,5 +41,8 @@
   "optionalDependencies": {
     "@anthropic-ai/sdk": "^0.32.0",
     "openai": "^4.70.0"
+  },
+  "dependencies": {
+    "dotenv": "^17.2.3"
   }
 }
