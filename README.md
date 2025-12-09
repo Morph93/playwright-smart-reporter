@@ -21,6 +21,95 @@ An intelligent Playwright HTML reporter with AI-powered failure analysis, flakin
 - **JSON Export** - Download results for external processing
 - **Slack/Teams Notifications** - Get alerted on failures
 - **CI Integration** - Auto-detects GitHub, GitLab, CircleCI, Jenkins, Azure DevOps
+- ✨ **NEW: Test Retry Analysis** - Track tests that frequently need retries
+- ✨ **NEW: Failure Clustering** - Group similar failures by error type
+- ✨ **NEW: Stability Scoring** - Composite health metrics (0-100 with letter grades)
+- ✨ **NEW: Attachment Gallery** - Grid view of all screenshots, videos, and traces
+- ✨ **NEW: Run Comparison** - Compare current run vs baseline to see what changed
+- ✨ **NEW: Smart Recommendations** - AI-powered actionable insights
+- ✨ **NEW: Trace Viewer Integration** - Open Playwright traces directly from report
+- ✨ **NEW: Merge History CLI** - Combine parallel CI run histories
+
+## New in v0.5.0
+
+### Test Retry Analysis
+
+Track tests that require multiple attempts to pass. The report now identifies tests with high retry rates, helping you spot unreliable tests that pass inconsistently.
+
+- Automatically detects tests that passed only after retries
+- Shows retry count for each test
+- Highlights tests that exceed the retry threshold (default: 3)
+- Helps identify flaky tests that might pass/fail randomly
+
+### Failure Clustering
+
+Automatically groups similar failures together by analyzing error messages and stack traces. This makes it easier to identify patterns and common root causes across multiple test failures.
+
+- Groups failures by error type (timeout, assertion, network, etc.)
+- Shows count of similar failures in each cluster
+- Helps prioritize fixes by identifying widespread issues
+- Reduces noise when debugging multiple failures
+
+### Stability Scoring
+
+Comprehensive health metrics that give each test a stability score from 0-100 with letter grades (A+ to F).
+
+- **A+ (95-100)**: Rock solid, consistently passing
+- **A (90-94)**: Very stable with rare failures
+- **B (80-89)**: Generally stable with occasional issues
+- **C (70-79)**: Moderately stable, needs attention
+- **D (60-69)**: Unstable, frequent failures
+- **F (<60)**: Critically unstable, requires immediate attention
+
+Scores are calculated based on:
+- Pass rate over recent runs
+- Retry frequency
+- Performance consistency
+- Failure patterns
+
+### Attachment Gallery
+
+New gallery view displaying all test attachments (screenshots, videos, traces) in an organized grid layout.
+
+- Visual grid of all screenshots from test runs
+- Quick access to videos and trace files
+- Filter by test status or file name
+- Thumbnail previews with click-to-expand
+- Trace Viewer integration - open `.zip` traces directly in Playwright's trace viewer
+
+### Run Comparison
+
+Compare the current test run against a baseline to see exactly what changed.
+
+- Side-by-side comparison of test results
+- Highlights new failures, new passes, and regressions
+- Shows performance changes (faster/slower)
+- Identifies newly added or removed tests
+- Configure baseline using `baselineRunId` option
+
+### Smart Recommendations
+
+AI-powered actionable insights based on your test results. The reporter analyzes patterns and provides specific recommendations:
+
+- Suggests tests to investigate based on failure patterns
+- Identifies performance bottlenecks
+- Recommends retry configuration adjustments
+- Highlights flaky tests that need stabilization
+- Provides priority-ranked action items
+
+### Merge History CLI
+
+New command-line tool for combining test histories from parallel CI runs.
+
+```bash
+# Merge histories from multiple parallel shards
+npx playwright-smart-reporter-merge-history history1.json history2.json -o merged.json
+
+# Use glob patterns for multiple files
+npx playwright-smart-reporter-merge-history 'blob-reports/**/test-history.json' -o test-history.json --max-runs 10
+```
+
+This is essential for maintaining accurate history when running tests in parallel across multiple machines or shards.
 
 ## Installation
 
@@ -44,6 +133,16 @@ export default defineConfig({
       performanceThreshold: 0.2,
       slackWebhook: process.env.SLACK_WEBHOOK_URL,
       teamsWebhook: process.env.TEAMS_WEBHOOK_URL,
+      // v0.5.0 features
+      enableRetryAnalysis: true,
+      enableFailureClustering: true,
+      enableStabilityScore: true,
+      enableGalleryView: true,
+      enableComparison: true,
+      enableAIRecommendations: true,
+      stabilityThreshold: 70,
+      retryFailureThreshold: 3,
+      baselineRunId: 'main-branch-baseline', // optional
     }],
   ],
 });
@@ -59,6 +158,15 @@ export default defineConfig({
 | `performanceThreshold` | `0.2` | Threshold for performance regression (20%) |
 | `slackWebhook` | - | Slack webhook URL for failure notifications |
 | `teamsWebhook` | - | Microsoft Teams webhook URL for notifications |
+| `enableRetryAnalysis` | `true` | Track tests that frequently need retries |
+| `enableFailureClustering` | `true` | Group similar failures by error type |
+| `enableStabilityScore` | `true` | Show stability scores (0-100) with letter grades |
+| `enableGalleryView` | `true` | Display attachment gallery view |
+| `enableComparison` | `true` | Enable run comparison against baseline |
+| `enableAIRecommendations` | `true` | Generate AI-powered recommendations |
+| `stabilityThreshold` | `70` | Minimum stability score (C grade) to avoid warnings |
+| `retryFailureThreshold` | `3` | Number of retries before flagging as problematic |
+| `baselineRunId` | - | Optional: Run ID to use as baseline for comparisons |
 
 ### AI Analysis
 
@@ -237,6 +345,20 @@ npm run test:demo
 # Open the report
 open example/smart-report.html
 ```
+
+### Merge History CLI
+
+When running tests in parallel across multiple machines or CI shards, use the merge history CLI tool to combine test histories:
+
+```bash
+# Merge parallel test histories
+npx playwright-smart-reporter-merge-history history1.json history2.json -o merged.json
+
+# Use with glob patterns
+npx playwright-smart-reporter-merge-history 'blob-reports/**/test-history.json' -o test-history.json --max-runs 10
+```
+
+This ensures your flakiness detection and performance trends work correctly even with parallelized test execution. The merged history maintains all the metadata from individual runs while deduplicating test results.
 
 ## License
 
