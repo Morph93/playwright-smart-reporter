@@ -628,11 +628,13 @@ function generateStyles(passRate: number): string {
     /* Secondary Trend Sections (Duration, Flaky, Slow) */
     .secondary-trends {
       display: grid;
-      grid-template-columns: repeat(3, 1fr);
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
       gap: 1.25rem;
       margin-top: 1.75rem;
       padding-top: 1.75rem;
       border-top: 1px solid var(--border-subtle);
+      max-width: 100%;
+      overflow-x: hidden;
     }
 
     @media (max-width: 768px) {
@@ -1068,6 +1070,27 @@ function generateStyles(passRate: number): string {
       color: var(--text-muted);
       border-color: var(--border-subtle);
       background: rgba(90, 90, 112, 0.1);
+    }
+
+    .badge.stability-high {
+      color: var(--accent-green);
+      border-color: var(--accent-green-dim);
+      background: rgba(0, 255, 136, 0.1);
+      font-weight: 600;
+    }
+
+    .badge.stability-medium {
+      color: var(--accent-yellow);
+      border-color: var(--accent-yellow-dim);
+      background: rgba(255, 204, 0, 0.1);
+      font-weight: 600;
+    }
+
+    .badge.stability-low {
+      color: var(--accent-red);
+      border-color: var(--accent-red-dim);
+      background: rgba(255, 68, 102, 0.1);
+      font-weight: 600;
     }
 
     .trend {

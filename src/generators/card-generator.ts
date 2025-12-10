@@ -28,6 +28,14 @@ export function generateTestCard(test: TestResultData): string {
   if (isSlow) trendClass = 'slower';
   else if (isFaster) trendClass = 'faster';
 
+  // Determine stability badge class
+  let stabilityClass = 'stability-high';
+  if (test.stabilityScore) {
+    if (test.stabilityScore.overall >= 90) stabilityClass = 'stability-high';
+    else if (test.stabilityScore.overall >= 70) stabilityClass = 'stability-medium';
+    else stabilityClass = 'stability-low';
+  }
+
   return `
     <div id="card-${cardId}" class="test-card"
          data-status="${test.status}"
@@ -43,6 +51,7 @@ export function generateTestCard(test: TestResultData): string {
         </div>
         <div class="test-card-right">
           <span class="test-duration">${formatDuration(test.duration)}</span>
+          ${test.stabilityScore ? `<span class="badge ${stabilityClass}" title="Stability Score: ${test.stabilityScore.overall}/100 (Flakiness: ${test.stabilityScore.flakiness}, Performance: ${test.stabilityScore.performance}, Reliability: ${test.stabilityScore.reliability})">${test.stabilityScore.grade} (${test.stabilityScore.overall})</span>` : ''}
           ${test.flakinessIndicator ? `<span class="badge ${badgeClass}">${test.flakinessIndicator.replace(/[🟢🟡🔴⚪]\s*/g, '')}</span>` : ''}
           ${test.performanceTrend ? `<span class="trend ${trendClass}">${test.performanceTrend}</span>` : ''}
           ${hasDetails ? `<span class="expand-icon">▶</span>` : ''}
