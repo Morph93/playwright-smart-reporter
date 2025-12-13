@@ -1073,8 +1073,29 @@ Provide a brief, actionable suggestion to fix this failure.`;
       filter: brightness(1.1);
     }
 
+    .bar-group {
+      cursor: pointer;
+    }
+
     .bar-group:hover .chart-bar {
       transform: translateY(-2px);
+    }
+
+    /* Chart Tooltip */
+    .chart-tooltip {
+      position: absolute;
+      display: none;
+      background: var(--bg-card);
+      color: var(--text-primary);
+      padding: 0.5rem 0.75rem;
+      border-radius: 6px;
+      font-size: 0.85rem;
+      font-weight: 500;
+      border: 1px solid var(--border-subtle);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+      pointer-events: none;
+      z-index: 10000;
+      white-space: nowrap;
     }
 
     .secondary-trends-grid {
@@ -2128,6 +2149,32 @@ Provide a brief, actionable suggestion to fix this failure.`;
       
       URL.revokeObjectURL(url);
     }
+
+    // Chart bar tooltips
+    (function initChartTooltips() {
+      const tooltip = document.createElement('div');
+      tooltip.className = 'chart-tooltip';
+      document.body.appendChild(tooltip);
+
+      document.querySelectorAll('.bar-group').forEach(bar => {
+        bar.addEventListener('mouseenter', (e) => {
+          const text = bar.getAttribute('data-tooltip');
+          if (text) {
+            tooltip.textContent = text;
+            tooltip.style.display = 'block';
+          }
+        });
+
+        bar.addEventListener('mousemove', (e) => {
+          tooltip.style.left = e.pageX + 10 + 'px';
+          tooltip.style.top = e.pageY - 30 + 'px';
+        });
+
+        bar.addEventListener('mouseleave', () => {
+          tooltip.style.display = 'none';
+        });
+      });
+    })();
   </script>
 </body>
 </html>`;

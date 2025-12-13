@@ -78,7 +78,7 @@ export function generateTrendChart(data: ChartData): string {
       `;
     }).join('');
 
-    // Generate bars
+    // Generate bars with tooltips
     const bars = chartData.map((d, i) => {
       const value = getValue(d);
       const x = padding.left + i * spacing + (spacing - barWidth) / 2;
@@ -89,7 +89,7 @@ export function generateTrendChart(data: ChartData): string {
       const displayValue = formatValue ? formatValue(value) : value.toString();
 
       return `
-        <g class="bar-group">
+        <g class="bar-group" data-tooltip="${label}: ${displayValue}">
           <rect
             x="${x}"
             y="${y}"
@@ -101,20 +101,10 @@ export function generateTrendChart(data: ChartData): string {
             stroke-width="${isCurrent ? '2' : '0'}"
             rx="3"
             class="chart-bar"
-          >
-            <title>${label}: ${displayValue}</title>
-          </rect>
+          />
         </g>
       `;
     }).join('');
-
-    // Generate trend line
-    const trendPoints = chartData.map((d, i) => {
-      const value = getValue(d);
-      const x = padding.left + i * spacing + spacing / 2;
-      const y = padding.top + plotHeight - (value / maxValue) * plotHeight;
-      return `${x},${y}`;
-    }).join(' ');
 
     // Generate x-axis labels
     const xLabels = chartData.map((d, i) => {
@@ -125,7 +115,7 @@ export function generateTrendChart(data: ChartData): string {
     }).join('');
 
     return `
-      <svg width="${chartWidth}" height="${chartHeight}" style="overflow: visible;">
+      <svg width="${chartWidth}" height="${chartHeight}" style="overflow: visible;" class="chart-svg">
         <!-- Y-axis label -->
         <text x="12" y="${chartHeight / 2}" fill="var(--text-secondary)" font-size="11" font-weight="600" text-anchor="middle" transform="rotate(-90, 12, ${chartHeight / 2})">${yAxisLabel}</text>
 
@@ -134,26 +124,6 @@ export function generateTrendChart(data: ChartData): string {
 
         <!-- Bars -->
         ${bars}
-
-        <!-- Trend line -->
-        <polyline
-          points="${trendPoints}"
-          fill="none"
-          stroke="${color}"
-          stroke-width="2"
-          stroke-dasharray="4,4"
-          opacity="0.6"
-          stroke-linecap="round"
-        />
-
-        <!-- Trend line data points -->
-        ${chartData.map((d, i) => {
-          const value = getValue(d);
-          const x = padding.left + i * spacing + spacing / 2;
-          const y = padding.top + plotHeight - (value / maxValue) * plotHeight;
-          const isCurrent = i === chartData.length - 1;
-          return `<circle cx="${x}" cy="${y}" r="${isCurrent ? 4 : 2.5}" fill="${color}" stroke="white" stroke-width="1.5"/>`;
-        }).join('')}
 
         <!-- X-axis labels -->
         ${xLabels}
