@@ -5,6 +5,7 @@
 An intelligent Playwright HTML reporter with AI-powered failure analysis, flakiness detection, and performance regression alerts.
 
 ![Report Overview](https://raw.githubusercontent.com/qa-gary-parker/playwright-smart-reporter/master/images/report-overview.png)
+*v0.5.0 dashboard showing: stability score filtering (A-F grades), trend charts with 2x2 grid layout, run comparison, attachment gallery, and comprehensive test results*
 
 ## Features
 
@@ -192,21 +193,25 @@ The reporter will automatically analyze failures and provide fix suggestions in 
 - Slow test count
 - Total duration
 
-### Pass Rate Trend Chart
+### Trend Charts
 
-![Trend Chart](https://raw.githubusercontent.com/qa-gary-parker/playwright-smart-reporter/master/images/trend-chart-hover.png)
+![Trend Charts](https://raw.githubusercontent.com/qa-gary-parker/playwright-smart-reporter/master/images/trend-chart-hover.png)
+*Responsive 2x2 grid layout with interactive tooltips showing exact values on hover*
 
-Visual stacked bar chart showing test status across runs:
+Visual charts showing test history across runs:
+
+**Main Trend Chart** (top):
 - **Green** - Passed tests
 - **Red** - Failed tests
 - **Gray** - Skipped tests
-- Hover over any segment to see the count
-- Current run highlighted with glow effect
+- Hover over any bar to see exact counts
+- Current run highlighted with border
 
-Secondary trend charts show:
-- **Duration** - Suite execution time per run
-- **Flaky** - Number of flaky tests detected
-- **Slow** - Number of slow tests detected
+**Secondary Charts** (2x2 grid):
+- **Duration** - Suite execution time per run with values on hover
+- **Flaky** - Number of flaky tests detected per run
+- **Slow** - Number of slow tests detected per run
+- **Run Comparison** - Diff against baseline showing changes
 
 ### Flakiness Indicators
 - 🟢 **Stable** (<10% failure rate)
@@ -220,18 +225,21 @@ Secondary trend charts show:
 - ↓ **Improved** - Test is faster than average
 - → **Stable** - Test is within normal range
 
-### Per-Test History Visualization
+### Per-Test Details
 
 ![Expanded Test](https://raw.githubusercontent.com/qa-gary-parker/playwright-smart-reporter/master/images/test-expanded-ai.png)
+*Expanded failed test showing: run history sparkline, duration trend chart, step timings with SLOWEST badge, clean error display (no ANSI codes), embedded screenshot, and AI-powered suggestions*
 
 When you expand a test, you'll see:
-- **Pass/Fail Sparkline** - Green/red/gray dots showing the pattern
-- **Duration Trend Chart** - Bar chart showing how duration changes
-- **Step Timings** - Visual breakdown with slowest step highlighted
-- **Error Details** - Full error message with stack trace
-- **Screenshot** - Embedded failure screenshot (click to expand)
-- **AI Suggestion** - AI-powered fix recommendations
-- Current run highlighted with border/purple color
+- **Pass/Fail Sparkline** - Green/red/gray dots showing the pattern across runs
+- **Duration Trend Chart** - Bar chart showing performance over time
+- **Step Timings** - Visual breakdown with slowest step highlighted (SLOWEST badge)
+- **Error Details** - Clean error messages with ANSI escape codes stripped
+- **Screenshot** - Embedded failure screenshot (click to expand to full size)
+- **AI Suggestion** - Contextual fix recommendations from Claude or OpenAI
+- **Retry Information** - Shows which retry attempt passed (if applicable)
+- **Stability Score** - Letter grade (A-F) indicating test health
+- Current run highlighted with distinct styling
 
 ### Step Timings
 - Visual bar chart of step durations
