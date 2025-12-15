@@ -179,16 +179,14 @@ export function generateTrendChart(data: ChartData): string {
         <div class="trend-subtitle">Last ${allSummaries.length} runs</div>
       </div>
 
-      <!-- Pass Rate Chart -->
-      <div class="line-chart-container">
-        <h4 class="chart-title">✅ Pass Rate Over Time</h4>
-        ${passRateChart}
-      </div>
-
-      <!-- Secondary Charts Grid -->
-      <div class="secondary-trends-grid">
+      <!-- All Charts in Grid -->
+      <div class="all-charts-grid">
         <div class="line-chart-container">
-          <h4 class="chart-title">⏱️ Duration Trend</h4>
+          <h4 class="chart-title">✅ Pass Rate</h4>
+          ${passRateChart}
+        </div>
+        <div class="line-chart-container">
+          <h4 class="chart-title">⏱️ Duration</h4>
           ${durationChart}
         </div>
         <div class="line-chart-container">

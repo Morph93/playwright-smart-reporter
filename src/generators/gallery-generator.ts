@@ -116,17 +116,21 @@ function generateGalleryItem(item: GalleryItem): string {
   // Trace
   if (item.tracePath) {
     return `
-      <div class="gallery-item" data-type="traces" data-id="${itemId}">
+      <div class="gallery-item trace-item" data-type="traces" data-id="${itemId}">
         <div class="gallery-item-preview trace-preview">
           <div class="gallery-item-overlay">
-            <span class="gallery-item-icon">🔍</span>
+            <div class="trace-icon-wrapper">
+              <span class="trace-file-icon">📊</span>
+              <span class="trace-file-type">.zip</span>
+            </div>
           </div>
         </div>
         <div class="gallery-item-info">
           <div class="gallery-item-title" title="${escapeHtml(item.testTitle)}">${escapeHtml(item.testTitle)}</div>
           <div class="gallery-item-status ${statusClass}">${item.status}</div>
-          <a href="${item.tracePath}" class="gallery-item-link" download onclick="event.stopPropagation()">
-            📥 Download Trace
+          <a href="${item.tracePath}" class="gallery-trace-download" download onclick="event.stopPropagation()">
+            <span class="download-icon">⬇</span>
+            <span>Download Trace</span>
           </a>
         </div>
       </div>
@@ -143,30 +147,9 @@ function collectGalleryItems(results: TestResultData[]): GalleryItem[] {
   const items: GalleryItem[] = [];
 
   for (const test of results) {
-    // Add screenshot
-    if (test.screenshot) {
-      items.push({
-        id: `${test.testId}-screenshot`,
-        testTitle: test.title,
-        testId: test.testId,
-        status: test.status,
-        dataUri: test.screenshot
-      });
-    }
-
-    // Add video
-    if (test.videoPath) {
-      items.push({
-        id: `${test.testId}-video`,
-        testTitle: test.title,
-        testId: test.testId,
-        status: test.status,
-        videoPath: test.videoPath
-      });
-    }
-
-    // Add attachments if available
+    // Use new attachments format if available, otherwise fall back to legacy properties
     if (test.attachments) {
+      // New format - use attachments object
       test.attachments.screenshots.forEach((screenshot, idx) => {
         items.push({
           id: `${test.testId}-screenshot-${idx}`,
@@ -196,6 +179,37 @@ function collectGalleryItems(results: TestResultData[]): GalleryItem[] {
           tracePath: trace
         });
       });
+    } else {
+      // Legacy format - use individual properties
+      if (test.screenshot) {
+        items.push({
+          id: `${test.testId}-screenshot`,
+          testTitle: test.title,
+          testId: test.testId,
+          status: test.status,
+          dataUri: test.screenshot
+        });
+      }
+
+      if (test.videoPath) {
+        items.push({
+          id: `${test.testId}-video`,
+          testTitle: test.title,
+          testId: test.testId,
+          status: test.status,
+          videoPath: test.videoPath
+        });
+      }
+
+      if (test.tracePath) {
+        items.push({
+          id: `${test.testId}-trace`,
+          testTitle: test.title,
+          testId: test.testId,
+          status: test.status,
+          tracePath: test.tracePath
+        });
+      }
     }
   }
 

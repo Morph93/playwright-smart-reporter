@@ -652,6 +652,19 @@ function generateStyles(passRate: number): string {
       gap: 0.5rem;
     }
 
+    .all-charts-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1.25rem;
+      margin-top: 1rem;
+    }
+
+    @media (max-width: 1024px) {
+      .all-charts-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
     .secondary-trends-grid {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
@@ -1663,6 +1676,61 @@ function generateStyles(passRate: number): string {
 
     .gallery-item-link:hover {
       text-decoration: underline;
+    }
+
+    /* Trace-specific styling */
+    .trace-item .gallery-item-preview {
+      background: linear-gradient(135deg, #1e3a5f, #0f1922);
+    }
+
+    .trace-icon-wrapper {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .trace-file-icon {
+      font-size: 2.5rem;
+      filter: grayscale(0.3);
+    }
+
+    .trace-file-type {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.8rem;
+      color: var(--accent-blue);
+      background: rgba(59, 130, 246, 0.1);
+      padding: 0.25rem 0.5rem;
+      border-radius: 4px;
+      border: 1px solid rgba(59, 130, 246, 0.3);
+    }
+
+    .gallery-trace-download {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-top: 0.5rem;
+      padding: 0.5rem 0.75rem;
+      font-size: 0.75rem;
+      color: var(--text-primary);
+      background: linear-gradient(135deg, rgba(59, 130, 246, 0.15), rgba(59, 130, 246, 0.05));
+      border: 1px solid rgba(59, 130, 246, 0.3);
+      border-radius: 6px;
+      text-decoration: none;
+      transition: all 0.2s ease;
+      font-weight: 500;
+    }
+
+    .gallery-trace-download:hover {
+      background: linear-gradient(135deg, rgba(59, 130, 246, 0.25), rgba(59, 130, 246, 0.15));
+      border-color: rgba(59, 130, 246, 0.5);
+      transform: translateY(-1px);
+    }
+
+    .download-icon {
+      font-size: 1rem;
+      display: flex;
+      align-items: center;
     }
 
     /* Lightbox */
