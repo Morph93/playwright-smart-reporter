@@ -114,7 +114,7 @@ export class HistoryCollector {
       flaky,
       slow,
       duration,
-      passRate: (passed + failed) > 0 ? Math.round((passed / (passed + failed)) * 100) : 0,
+      passRate: total > 0 ? Math.round((passed / total) * 100) : 0,
     };
 
     this.history.summaries!.push(summary);

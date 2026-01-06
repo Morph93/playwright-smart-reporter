@@ -38,7 +38,7 @@ export function generateHtml(data: HtmlGeneratorData): string {
     r.flakinessIndicator?.includes('New')
   ).length;
   const total = results.length;
-  const passRate = (passed + failed) > 0 ? Math.round((passed / (passed + failed)) * 100) : 0;
+  const passRate = total > 0 ? Math.round((passed / total) * 100) : 0;
 
   // Calculate stability grade counts
   const gradeA = results.filter((r) => r.stabilityScore && r.stabilityScore.grade === 'A').length;

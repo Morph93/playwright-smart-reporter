@@ -5,7 +5,7 @@
 An intelligent Playwright HTML reporter with AI-powered failure analysis, flakiness detection, and performance regression alerts.
 
 ![Report Overview](https://raw.githubusercontent.com/qa-gary-parker/playwright-smart-reporter/master/images/report-overview.png)
-*v0.5.0 dashboard showing: stability score filtering (A-F grades), trend charts with 2x2 grid layout, run comparison, attachment gallery, and comprehensive test results*
+*v0.7.0 dashboard showing: stability score filtering (A-F grades), trend charts, run comparison, attachment gallery, and comprehensive test results*
 
 ## Features
 
@@ -31,6 +31,24 @@ An intelligent Playwright HTML reporter with AI-powered failure analysis, flakin
 - ✨ **NEW: Smart Recommendations** - AI-powered actionable insights
 - ✨ **NEW: Trace Viewer Integration** - Open Playwright traces directly from report
 - ✨ **NEW: Merge History CLI** - Combine parallel CI run histories
+
+## New in v0.7.0
+
+### UI Improvements
+- **Copy Buttons** - One-click copy for AI suggestions and code blocks
+- **Keyboard Navigation** - Use `j`/`k` to navigate tests, `Enter` to expand/collapse
+- **Collapsible Trends** - Click to expand/collapse the trend charts section
+- **New Test Filter** - Filter to show only first-time tests (no history yet)
+
+### Bug Fixes
+- **Pass Rate Consistency** - Fixed inconsistent pass rate calculations across header, charts, and comparisons. All now use `passed / total` formula.
+
+### Code Quality
+- Major internal code cleanup removing 2,200+ lines of dead code
+- Improved type safety throughout chart generation
+- Added null safety checks in gallery lightbox
+
+---
 
 ## New in v0.5.0
 

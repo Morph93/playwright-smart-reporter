@@ -309,7 +309,7 @@ class SmartReporter implements Reporter {
           flaky,
           slow,
           duration,
-          passRate: (passed + failed) > 0 ? Math.round((passed / (passed + failed)) * 100) : 0,
+          passRate: this.results.length > 0 ? Math.round((passed / this.results.length) * 100) : 0,
         };
 
         // Build baseline tests map from history
