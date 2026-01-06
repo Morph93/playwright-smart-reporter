@@ -40,6 +40,7 @@ export function generateTestCard(test: TestResultData): string {
     <div id="card-${cardId}" class="test-card"
          data-status="${test.status}"
          data-flaky="${isFlaky}"
+         data-unstable="${isUnstable}"
          data-slow="${isSlow}"
          data-grade="${test.stabilityScore?.grade || ''}">
       <div class="test-card-header" ${hasDetails ? `onclick="toggleDetails('${cardId}')"` : ''}>

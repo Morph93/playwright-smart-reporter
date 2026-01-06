@@ -20,6 +20,7 @@ export interface SmartReporterOptions {
   enableGalleryView?: boolean;
   enableComparison?: boolean;
   enableAIRecommendations?: boolean;
+  enableTrendsView?: boolean;
 
   // NEW: Thresholds
   stabilityThreshold?: number;     // Default: 70 (warn below this)

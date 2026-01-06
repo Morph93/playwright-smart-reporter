@@ -423,6 +423,27 @@ function generateStyles(passRate: number): string {
       font-family: 'JetBrains Mono', monospace;
     }
 
+    .trend-message {
+      padding: 1.5rem;
+      background: var(--bg-primary);
+      border-radius: 12px;
+      border: 1px solid var(--border-subtle);
+      text-align: center;
+      color: var(--text-secondary);
+    }
+
+    .trend-message p {
+      margin: 0.5rem 0;
+    }
+
+    .trend-message code {
+      background: var(--bg-secondary);
+      padding: 0.2rem 0.4rem;
+      border-radius: 4px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.85em;
+    }
+
     .trend-chart {
       display: flex;
       align-items: flex-end;

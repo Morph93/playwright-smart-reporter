@@ -64,10 +64,21 @@ export function stripAnsiCodes(str: string): string {
 /**
  * Sanitize a string to be used as a safe filename
  * Replaces path separators and other problematic characters while preserving readability
+ * Also truncates long filenames to prevent ENAMETOOLONG errors
  * @param str - String to sanitize
+ * @param maxLength - Maximum length for the filename (default: 200 to leave room for suffixes)
  * @returns Safe filename string
  */
-export function sanitizeFilename(str: string): string {
+export function sanitizeFilename(str: string, maxLength: number = 200): string {
   // Replace path separators and colons with double underscores for better readability
-  return str.replace(/[\/\\:]/g, '__').replace(/[<>"|?*]/g, '_');
+  let sanitized = str.replace(/[\/\\:]/g, '__').replace(/[<>"|?*\n\r]/g, '_');
+
+  // Truncate if too long, appending hash for uniqueness
+  if (sanitized.length > maxLength) {
+    const hash = hashString(str);
+    const truncateLength = maxLength - hash.length - 1; // -1 for separator
+    sanitized = sanitized.substring(0, truncateLength) + '-' + hash;
+  }
+
+  return sanitized;
 }

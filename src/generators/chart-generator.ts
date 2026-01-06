@@ -16,8 +16,21 @@ export interface ChartData {
  */
 export function generateTrendChart(data: ChartData): string {
   const summaries = data.history.summaries || [];
-  if (summaries.length < 2) {
-    return ''; // Don't show trend with less than 2 data points
+  if (summaries.length < 1) {
+    // Show helpful message explaining why trends aren't visible
+    return `
+      <div class="trend-section">
+        <div class="trend-header">
+          <div class="trend-title">📊 Test Run Trends</div>
+          <div class="trend-subtitle">Collecting data...</div>
+        </div>
+        <div class="trend-message">
+          <p>📈 <strong>Trends will appear after 2+ test runs.</strong></p>
+          <p>Run your tests again to start seeing historical trends, pass rates, and performance patterns.</p>
+          <p style="font-size: 0.85em; opacity: 0.7;">Make sure your <code>historyFile</code> option points to a persistent location.</p>
+        </div>
+      </div>
+    `;
   }
 
   const passed = data.results.filter(r => r.status === 'passed').length;

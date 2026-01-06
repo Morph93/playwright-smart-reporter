@@ -25,6 +25,7 @@ export class HistoryCollector {
       enableGalleryView: options.enableGalleryView ?? true,
       enableComparison: options.enableComparison ?? true,
       enableAIRecommendations: options.enableAIRecommendations ?? true,
+      enableTrendsView: options.enableTrendsView ?? true,
       stabilityThreshold: options.stabilityThreshold ?? 70,
       retryFailureThreshold: options.retryFailureThreshold ?? 3,
       slackWebhook: options.slackWebhook,
