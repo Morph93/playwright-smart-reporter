@@ -5,7 +5,8 @@
   "main": "dist/smart-reporter.js",
   "types": "dist/smart-reporter.d.ts",
   "bin": {
-    "playwright-smart-reporter-merge-history": "./dist/bin/merge-history.js"
+    "playwright-smart-reporter-merge-history": "./dist/bin/merge-history.js",
+    "playwright-smart-reporter-view-trace": "./dist/bin/view-trace.js"
   },
   "files": [
     "dist"

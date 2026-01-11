@@ -155,6 +155,43 @@ export function generateTestDetails(test: TestResultData, cardId: string): strin
     `;
   }
 
+  const tracePaths = test.attachments?.traces?.length
+    ? test.attachments.traces
+    : (test.tracePath ? [test.tracePath] : []);
+  const showTraceViewer = test.status !== 'passed' && tracePaths.length > 0;
+  if (showTraceViewer) {
+    details += `
+      <div class="detail-section">
+        <div class="detail-label"><span class="icon">📊</span> Trace</div>
+        <div class="trace-list">
+          ${tracePaths.map((trace, idx) => {
+            const suffix = tracePaths.length > 1 ? ` #${idx + 1}` : '';
+            const safeTrace = escapeHtml(trace);
+            const fileName = escapeHtml(trace.split(/[\\\\/]/).pop() || trace);
+            const cmdId = `trace-cmd-${cardId}-${idx}`;
+            const cmd = `npx playwright-smart-reporter-view-trace "${trace.replace(/"/g, '\\"')}" --dir "."`;
+
+            return `
+              <div class="trace-row">
+                <div class="trace-meta">
+                  <div class="trace-file">
+                    <span class="trace-file-icon">📦</span>
+                    <span class="trace-file-name" title="${safeTrace}">${fileName}${suffix}</span>
+                  </div>
+                  <div class="trace-path" title="${safeTrace}">${safeTrace}</div>
+                </div>
+                <div class="trace-actions">
+                  <a href="${safeTrace}" class="attachment-link" download>⬇ Download</a>
+                  <a href="#" class="attachment-link" data-trace="${safeTrace}" onclick="return viewTraceFromEl(this)">🔍 View</a>
+                </div>
+              </div>
+            `;
+          }).join('')}
+        </div>
+      </div>
+    `;
+  }
+
   if (test.screenshot) {
     details += `
       <div class="detail-section">

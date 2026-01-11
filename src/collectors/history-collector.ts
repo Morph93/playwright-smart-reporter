@@ -26,6 +26,7 @@ export class HistoryCollector {
       enableComparison: options.enableComparison ?? true,
       enableAIRecommendations: options.enableAIRecommendations ?? true,
       enableTrendsView: options.enableTrendsView ?? true,
+      enableTraceViewer: options.enableTraceViewer ?? true,
       stabilityThreshold: options.stabilityThreshold ?? 70,
       retryFailureThreshold: options.retryFailureThreshold ?? 3,
       cspSafe: options.cspSafe ?? false,

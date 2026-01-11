@@ -21,6 +21,7 @@ export interface SmartReporterOptions {
   enableComparison?: boolean;
   enableAIRecommendations?: boolean;
   enableTrendsView?: boolean;
+  enableTraceViewer?: boolean; // Enable "View trace" links
 
   // NEW: Thresholds
   stabilityThreshold?: number;     // Default: 70 (warn below this)
