@@ -160,6 +160,7 @@ export default defineConfig({
       enableGalleryView: true,
       enableComparison: true,
       enableAIRecommendations: true,
+      enableTraceViewer: true,
       stabilityThreshold: 70,
       retryFailureThreshold: 3,
       baselineRunId: 'main-branch-baseline', // optional
@@ -184,6 +185,7 @@ export default defineConfig({
 | `enableGalleryView` | `true` | Display attachment gallery view |
 | `enableComparison` | `true` | Enable run comparison against baseline |
 | `enableAIRecommendations` | `true` | Generate AI-powered recommendations |
+| `enableTraceViewer` | `true` | Enable "View Trace" actions |
 | `stabilityThreshold` | `70` | Minimum stability score (C grade) to avoid warnings |
 | `retryFailureThreshold` | `3` | Number of retries before flagging as problematic |
 | `baselineRunId` | - | Optional: Run ID to use as baseline for comparisons |
@@ -237,6 +239,18 @@ Visual charts showing test history across runs:
 - 🔴 **Flaky** (>30% failure rate)
 - ⚪ **New** (no history yet)
 - ⚪ **Skipped** (test was skipped)
+
+### Trace Viewer
+
+The report includes **Download Trace** and **View Trace** actions on failed tests (and in the gallery when enabled).
+
+`View Trace` uses Playwright's native trace viewer (`npx playwright show-trace ...`) via the helper command below.
+
+To open a specific trace directly in Trace Viewer (starts the server automatically and opens the right URL):
+
+```bash
+npx playwright-smart-reporter-view-trace ./traces/<trace>.zip
+```
 
 ### Performance Trends
 - ↑ **Regression** - Test is slower than average
